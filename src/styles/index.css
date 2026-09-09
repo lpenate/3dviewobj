@@ -1,0 +1,113 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn-vue/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tema del visor: estética tipo Apple sobre los tokens de shadcn-vue.
+ * Tipografía del sistema (SF Pro en macOS/iOS), neutros fríos muy claros,
+ * texto casi negro, acento azul (#0071e3), radios generosos y bordes sutiles.
+ */
+@theme inline {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', 'Inter', system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-success: var(--success);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  /* #f5f5f7 fondo Apple, #1d1d1f texto, #0071e3 azul */
+  --background: oklch(0.972 0.001 286);
+  --foreground: oklch(0.217 0.004 286);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.217 0.004 286);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.217 0.004 286);
+  --primary: oklch(0.583 0.19 254);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.955 0.002 286);
+  --secondary-foreground: oklch(0.217 0.004 286);
+  --muted: oklch(0.955 0.002 286);
+  --muted-foreground: oklch(0.5 0.01 286);
+  --accent: oklch(0.955 0.002 286);
+  --accent-foreground: oklch(0.217 0.004 286);
+  --destructive: oklch(0.6 0.22 27);
+  --success: oklch(0.65 0.18 150);
+  --border: oklch(0.9 0.002 286);
+  --input: oklch(0.88 0.002 286);
+  --ring: oklch(0.583 0.19 254);
+  --radius: 0.875rem;
+}
+
+.dark {
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.96 0.002 286);
+  --card: oklch(0.21 0.004 286);
+  --card-foreground: oklch(0.96 0.002 286);
+  --popover: oklch(0.24 0.004 286);
+  --popover-foreground: oklch(0.96 0.002 286);
+  --primary: oklch(0.67 0.17 254);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.28 0.004 286);
+  --secondary-foreground: oklch(0.96 0.002 286);
+  --muted: oklch(0.28 0.004 286);
+  --muted-foreground: oklch(0.7 0.01 286);
+  --accent: oklch(0.28 0.004 286);
+  --accent-foreground: oklch(0.96 0.002 286);
+  --destructive: oklch(0.7 0.19 22);
+  --success: oklch(0.72 0.17 150);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.67 0.17 254);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Canvas de three.js: ocupa todo su contenedor. */
+.viewer-canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
