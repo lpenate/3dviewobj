@@ -90,7 +90,10 @@ src/
     GltfLoader.vue        Zona de arrastre + selector de ficheros + muestra
     ViewerControls.vue    Wireframe, animaciones, reencuadre
     ModelViewer.vue       Canvas + estados vacío/carga/error + drop
-    ModelInfoPanel.vue    Metadatos glTF y estadísticas
+    ModelInfoPanel.vue    Ficha en tarjeta lateral (escritorio)
+    ModelInfoSheet.vue    Ficha en panel inferior (móvil)
+    ModelInfoContent.vue  Contenido de la ficha compartido por ambas
+    ModelInfoBadges.vue   Badges de origen y variante glTF
   composables/
     useTheme.ts           Tema claro/oscuro
     useThreeViewer.ts     Escena three.js: renderer, cámara, OrbitControls, entorno, AnimationMixer
@@ -110,6 +113,14 @@ src/
   lo busca la CLI de shadcn-vue).
 - La regla `vue/multi-word-component-names` se desactiva solo en
   `src/components/ui/**`, donde shadcn usa nombres de una palabra.
+- Al añadir componentes con `npx shadcn-vue add`, la CLI vuelve a insertar en
+  `src/styles/index.css` el `@import` de la fuente Geist y un `@layer base`
+  duplicado. Hay que quitarlos: el tema usa la tipografía del sistema.
+- Responsive: por debajo del punto de corte `lg` (1024 px) el visor va primero
+  y la página se desplaza, la carga de ficheros locales se deshabilita con un
+  aviso (solo escritorio) y la ficha del modelo pasa de la tarjeta lateral a
+  un panel deslizante inferior (`Sheet`) que se abre desde un botón sobre el
+  visor.
 - Los materiales del glTF se respetan tal cual (PBR) y se iluminan con un
   entorno de estudio (`RoomEnvironment`) y tone mapping ACES.
 - three.js se separa en su propio chunk (`manualChunks`).
