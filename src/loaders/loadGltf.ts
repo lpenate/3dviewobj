@@ -69,12 +69,20 @@ const createLoader = (
     .setMeshoptDecoder(MeshoptDecoder)
 }
 
+/**
+ * Progreso de descarga en 0–100. Se acota porque, con compresión gzip en el
+ * servidor (p.ej. GitHub Pages), `total` es el tamaño comprimido y `loaded`
+ * cuenta bytes descomprimidos, con lo que el cociente supera el 100 %.
+ */
 const toProgress =
   (onProgress: ProgressCallback) =>
   (event: ProgressEvent): void =>
     onProgress({
       percent: event.lengthComputable
-        ? Math.round((event.loaded / event.total) * 100)
+        ? Math.min(
+            100,
+            Math.max(0, Math.round((event.loaded / event.total) * 100)),
+          )
         : null,
       loadedBytes: event.loaded,
     })
