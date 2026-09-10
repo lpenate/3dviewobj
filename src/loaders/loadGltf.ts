@@ -20,9 +20,13 @@ import {
   type ProgressCallback,
 } from '@/types/viewer'
 
-/** Decodificadores servidos desde `public/decoders/` (copiados de three). */
-const DRACO_DECODER_PATH = '/decoders/draco/'
-const BASIS_TRANSCODER_PATH = '/decoders/basis/'
+/**
+ * Decodificadores servidos desde `public/decoders/` (copiados de three). Se
+ * prefijan con la base de despliegue para funcionar también bajo un subpath
+ * (GitHub Pages sirve el proyecto en /<repo>/).
+ */
+const DRACO_DECODER_PATH = `${import.meta.env.BASE_URL}decoders/draco/`
+const BASIS_TRANSCODER_PATH = `${import.meta.env.BASE_URL}decoders/basis/`
 
 const baseName = (url: string): string =>
   decodeURIComponent(url.split(/[\\/]/).pop() ?? url).split('?')[0]

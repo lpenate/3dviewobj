@@ -61,7 +61,7 @@ export const SAMPLE_SOURCE: ModelSource = {
   id: 'sample:vintage_pocket_watch_2k',
   origin: SourceOrigin.SAMPLE,
   fileName: 'vintage_pocket_watch_2k.glb',
-  url: '/models/vintage_pocket_watch_2k.glb',
+  url: `${import.meta.env.BASE_URL}models/vintage_pocket_watch_2k.glb`,
   companions: {},
   sizeMb: 6.2,
   release: () => {},
