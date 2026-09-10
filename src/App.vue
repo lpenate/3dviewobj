@@ -1,18 +1,18 @@
 <template>
   <div class="flex h-full flex-col">
     <header
-      class="sticky top-0 z-10 flex items-center gap-4 border-b bg-background/70 px-6 py-3 backdrop-blur-xl"
+      class="sticky top-0 z-10 flex items-center gap-3 border-b bg-background/70 px-4 py-3 backdrop-blur-xl sm:gap-4 sm:px-6"
     >
       <span
-        class="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm"
+        class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm"
       >
         <BoxIcon class="size-5" />
       </span>
       <div class="min-w-0 flex-1">
-        <h1 class="text-lg leading-tight font-semibold tracking-tight">
+        <h1 class="truncate text-lg leading-tight font-semibold tracking-tight">
           Visor de modelos glTF
         </h1>
-        <p class="text-xs text-muted-foreground">
+        <p class="truncate text-xs text-muted-foreground">
           POC · Vue 3 + three.js + shadcn-vue
         </p>
       </div>
@@ -33,35 +33,57 @@
     </header>
 
     <main
-      class="grid min-h-0 flex-1 gap-4 p-4 max-lg:grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_340px]"
+      class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3 lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-4 lg:overflow-visible lg:p-4 xl:grid-cols-[300px_minmax(0,1fr)_340px]"
     >
-      <aside class="flex min-h-0 flex-col gap-4 overflow-y-auto">
-        <GltfLoader
+      <!-- Visor: primero en móvil, centro en escritorio. -->
+      <div
+        class="relative min-h-[60vh] shrink-0 lg:order-2 lg:min-h-[420px] lg:shrink"
+      >
+        <ModelViewer
+          ref="modelViewer"
+          class="h-full"
+          :loading="viewer.isLoading.value"
+          :progress="viewer.progress.value"
+          :error="viewer.error.value"
+          :empty="selectedSource === null"
           @files="loadLocalFiles"
-          @sample="selectSource(SAMPLE_SOURCE)"
         />
+        <!-- Móvil: la ficha se abre en un panel para no ocupar espacio. -->
+        <div v-if="!isDesktop" class="absolute top-3 right-3">
+          <ModelInfoSheet
+            :source="selectedSource"
+            :info="viewer.info.value"
+            :stats="viewer.stats.value"
+            :load-time-ms="viewer.loadTimeMs.value"
+            :loading="viewer.isLoading.value"
+          />
+        </div>
+      </div>
+
+      <aside
+        class="flex shrink-0 flex-col gap-3 lg:order-1 lg:min-h-0 lg:shrink lg:gap-4 lg:overflow-y-auto"
+      >
         <ViewerControls
           v-model:wireframe="wireframe"
           v-model:animations-enabled="animationsEnabled"
           :animation-names="viewer.animationNames.value"
           :disabled="!hasModel"
+          class="lg:order-2"
           @reset-view="viewer.resetView"
           @reload="loadSelected"
         />
+        <GltfLoader
+          class="lg:order-1"
+          :disabled="!isDesktop"
+          @files="loadLocalFiles"
+          @sample="selectSource(SAMPLE_SOURCE)"
+        />
       </aside>
 
-      <ModelViewer
-        ref="modelViewer"
-        class="min-h-[420px] max-lg:min-h-[60vh]"
-        :loading="viewer.isLoading.value"
-        :progress="viewer.progress.value"
-        :error="viewer.error.value"
-        :empty="selectedSource === null"
-        @files="loadLocalFiles"
-      />
-
+      <!-- Escritorio: ficha fija a la derecha (bajo el visor entre lg y xl). -->
       <aside
-        class="flex min-h-0 flex-col gap-4 overflow-y-auto max-xl:lg:col-span-2"
+        v-if="isDesktop"
+        class="flex min-h-0 flex-col gap-4 lg:order-3 lg:col-span-2 lg:overflow-y-auto xl:col-span-1"
       >
         <ModelInfoPanel
           :source="selectedSource"
@@ -79,6 +101,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, watch } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import { BoxIcon, MoonIcon, SunIcon } from '@lucide/vue'
 import { toast } from 'vue-sonner'
 import { Badge } from '@/components/ui/badge'
@@ -88,12 +111,16 @@ import GltfLoader from '@/components/GltfLoader.vue'
 import ViewerControls from '@/components/ViewerControls.vue'
 import ModelViewer from '@/components/ModelViewer.vue'
 import ModelInfoPanel from '@/components/ModelInfoPanel.vue'
+import ModelInfoSheet from '@/components/ModelInfoSheet.vue'
 import { useTheme } from '@/composables/useTheme'
 import { useThreeViewer } from '@/composables/useThreeViewer'
 import { createLocalSource } from '@/loaders/localFiles'
 import { SAMPLE_SOURCE, type ModelSource } from '@/types/model-source'
 
 const { theme, toggle: toggleTheme } = useTheme()
+
+/** Punto de corte `lg` de Tailwind: por debajo, layout móvil/tablet. */
+const isDesktop = useMediaQuery('(min-width: 1024px)')
 
 /** Fuente activa: la muestra al arrancar, o un fichero local. */
 const selectedSource = shallowRef<ModelSource | null>(null)
@@ -136,6 +163,10 @@ const selectSource = (source: ModelSource): void => {
 }
 
 const loadLocalFiles = (files: File[]): void => {
+  if (!isDesktop.value) {
+    toast.info('La carga de modelos locales está disponible en escritorio')
+    return
+  }
   try {
     const { source, warnings } = createLocalSource(files, selectedSource.value)
     warnings.forEach((warning) => toast.warning(warning))

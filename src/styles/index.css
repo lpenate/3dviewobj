@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+
+/*
+ ---break---
+ */
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn-vue/tailwind.css';
@@ -110,4 +115,15 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+/*
+ ---break---
+ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

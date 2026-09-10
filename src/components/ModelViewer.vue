@@ -71,10 +71,16 @@
 
     <p
       v-else
-      class="pointer-events-none absolute inset-x-0 bottom-3 text-center text-[11px] text-muted-foreground"
+      class="pointer-events-none absolute inset-x-0 bottom-3 px-4 text-center text-[11px] text-muted-foreground"
     >
-      Arrastra para orbitar · rueda para acercar · botón derecho para desplazar
-      · doble clic sobre una pieza para centrarla
+      <span class="lg:hidden">
+        Un dedo para orbitar · dos dedos para acercar y desplazar · doble toque
+        sobre una pieza para centrarla
+      </span>
+      <span class="hidden lg:inline">
+        Arrastra para orbitar · rueda para acercar · botón derecho para
+        desplazar · doble clic sobre una pieza para centrarla
+      </span>
     </p>
   </section>
 </template>
